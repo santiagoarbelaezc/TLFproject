@@ -1,0 +1,28 @@
+<!-- ========================================
+     CONFIRM MODAL COMPONENT - LIQUID GLASS
+     ======================================== -->
+<div class="modal-overlay" *ngIf="isOpen" (click)="cancel()">
+  <div class="modal-container" [class]="'modal-' + type" (click)="onContentClick($event)">
+    
+    <!-- Header del Modal -->
+    <div class="modal-header">
+      <h3 class="modal-title">{{ title }}</h3>
+    </div>
+
+    <!-- Contenido del Modal -->
+    <div class="modal-body">
+      <p class="modal-message">{{ message }}</p>
+    </div>
+
+    <!-- Footer con Acciones -->
+    <div class="modal-footer">
+      <button class="btn btn-secondary" (click)="cancel()">
+        {{ cancelText }}
+      </button>
+      <button class="btn btn-primary" [class]="'btn-' + type" (click)="confirm()">
+        {{ confirmText }}
+      </button>
+    </div>
+    
+  </div>
+</div>

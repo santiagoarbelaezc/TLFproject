@@ -1,0 +1,565 @@
+/* ========================================
+   CODE EDITOR COMPONENT STYLES - LIQUID GLASS
+   ======================================== */
+
+/* Contenedor Principal con efecto de profundidad */
+.code-editor-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-md)) saturate(150%);
+  box-shadow: var(--shadow-float);
+  overflow: hidden;
+  height: 600px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+/* Brillo superior en el contenedor */
+.code-editor-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    transparent 100%);
+  z-index: 1;
+}
+
+.code-editor-container:hover {
+  box-shadow: var(--shadow-float-hover);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ========================================
+   HEADER - LIQUID GLASS
+   ======================================== */
+.editor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: var(--glass-bg-heavy);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-md)) saturate(180%);
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+  position: relative;
+}
+
+/* Gradiente sutil en el header */
+.editor-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top left, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.editor-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.file-type {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-family: 'Courier New', monospace;
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  font-weight: 500;
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brillo animado en file-type */
+.file-type::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: badge-shimmer 3s ease-in-out infinite;
+}
+
+@keyframes badge-shimmer {
+  0%, 100% {
+    left: -100%;
+  }
+  50% {
+    left: 100%;
+  }
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+}
+
+.info-badge {
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  padding: 6px 14px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 500;
+  box-shadow: 
+    0 2px 6px rgba(0, 0, 0, 0.03),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.info-badge:hover {
+  background: var(--glass-bg-medium);
+  transform: scale(1.05);
+}
+
+/* ========================================
+   TOOLBAR - LIQUID GLASS
+   ======================================== */
+.editor-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(150%);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  flex-wrap: wrap;
+  gap: 12px;
+  position: relative;
+}
+
+/* Línea de separación con brillo */
+.editor-toolbar::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 5%;
+  right: 5%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.4) 50%, 
+    transparent 100%);
+}
+
+.toolbar-section {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+/* Botones - Liquid Glass Minimalistas */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  color: var(--text-primary);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Reflejo de luz en botones */
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.6s ease;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 
+    0 6px 16px rgba(0, 0, 0, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  background: var(--glass-bg-medium);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+.btn:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(-1px) scale(1);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.95), rgba(26, 26, 26, 0.85));
+  color: white;
+  border-color: rgba(255, 255, 255, 0.2);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+.btn-primary::before {
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 1), rgba(26, 26, 26, 0.9));
+  box-shadow: 
+    0 8px 24px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.btn-secondary {
+  background: var(--glass-bg-ultra-light);
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.25);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--glass-bg-light);
+  border-color: rgba(255, 255, 255, 0.35);
+}
+
+/* Select de Ejemplos - Minimalista */
+.example-select {
+  padding: 10px 14px;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  cursor: pointer;
+  transition: all var(--transition-base);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.example-select:hover:not(:disabled) {
+  border-color: rgba(26, 26, 26, 0.15);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.example-select:focus {
+  outline: none;
+  border-color: rgba(26, 26, 26, 0.2);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.04);
+}
+
+.example-select:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   EDITOR AREA - LIQUID GLASS CON SCROLL SINCRONIZADO
+   ======================================== */
+.editor-wrapper {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+  background: #ffffff;
+  position: relative;
+}
+
+/* Números de Línea - Con scroll sincronizado */
+.line-numbers {
+  background: var(--glass-bg-ultra-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  color: var(--text-secondary);
+  padding: 16px 8px;
+  text-align: right;
+  user-select: none;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  min-width: 60px;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
+  overflow-y: scroll;
+  overflow-x: hidden;
+  font-weight: 500;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.5);
+}
+
+/* Ocultar scrollbar de números de línea */
+.line-numbers::-webkit-scrollbar {
+  display: none; /* Chrome, Safari */
+}
+
+.line-number {
+  padding: 0 12px 0 8px;
+  height: 22.4px; /* Debe coincidir con line-height del textarea */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  transition: all 0.2s ease;
+}
+
+.line-number:hover {
+  background: rgba(26, 26, 26, 0.03);
+  color: var(--text-primary);
+}
+
+/* Textarea del Código - Sincronizado con números de línea */
+.code-textarea {
+  flex: 1;
+  padding: 16px;
+  border: none;
+  outline: none;
+  resize: none;
+  font-family: 'Courier New', Consolas, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  background: #ffffff;
+  color: var(--text-primary);
+  tab-size: 2;
+  overflow-y: scroll;
+  overflow-x: auto;
+}
+
+.code-textarea::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
+}
+
+.code-textarea:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: rgba(26, 26, 26, 0.02);
+}
+
+/* Scrollbar personalizado - Minimalista */
+.code-textarea::-webkit-scrollbar {
+  width: 10px;
+}
+
+.code-textarea::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.02);
+}
+
+.code-textarea::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.1);
+  border-radius: 8px;
+  border: 2px solid #ffffff;
+}
+
+.code-textarea::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 26, 26, 0.15);
+}
+
+/* ========================================
+   FOOTER - GLASSMORPHISM
+   ======================================== */
+.editor-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(26, 26, 26, 0.06);
+  font-size: 0.875rem;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Indicador de Estado */
+.status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-success);
+  animation: pulse 2s infinite;
+  box-shadow: 0 0 8px rgba(72, 187, 120, 0.4);
+}
+
+.status-indicator.analyzing .status-dot {
+  background: var(--color-warning);
+  box-shadow: 0 0 8px rgba(237, 137, 54, 0.4);
+  animation: blink 1s infinite;
+}
+
+.footer-info {
+  color: var(--text-secondary);
+}
+
+.footer-info strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.error-text {
+  color: var(--color-error) !important;
+}
+
+.success-text {
+  color: var(--color-success) !important;
+}
+
+/* ========================================
+   ICONOS
+   ======================================== */
+.icon {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes blink {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .code-editor-container {
+    height: 500px;
+  }
+
+  .editor-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .editor-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .toolbar-section {
+    flex-wrap: wrap;
+  }
+
+  .editor-title {
+    font-size: 1.1rem;
+  }
+
+  .line-numbers {
+    min-width: 40px;
+    font-size: 13px;
+  }
+
+  .code-textarea {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 480px) {
+  .code-editor-container {
+    height: 400px;
+  }
+
+  .btn {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+
+  .info-badge,
+  .example-select {
+    font-size: 0.8125rem;
+  }
+}

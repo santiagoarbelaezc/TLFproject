@@ -1,0 +1,534 @@
+/* ========================================
+   TOKEN TABLE COMPONENT STYLES - MINIMALISTA
+   ======================================== */
+
+/* Contenedor Principal */
+.token-table-container {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 16px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: var(--shadow-glass);
+  overflow: hidden;
+  margin-top: 24px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.token-table-container:hover {
+  box-shadow: var(--shadow-glass-hover);
+}
+
+.token-table-container.collapsed {
+  max-height: 70px;
+}
+
+/* ========================================
+   HEADER - GLASSMORPHISM
+   ======================================== */
+.table-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+}
+
+.table-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.token-count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+}
+
+.header-right {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========================================
+   CONTROLES DE FILTRADO - GLASSMORPHISM
+   ======================================== */
+.table-controls {
+  padding: 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(26, 26, 26, 0.06);
+}
+
+.controls-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.control-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.control-group.action-buttons {
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-end;
+  min-width: auto;
+}
+
+.control-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+/* Inputs - Minimalistas */
+.search-input,
+.type-select {
+  padding: 10px 14px;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+  transition: all var(--transition-base);
+  font-family: inherit;
+  font-weight: 500;
+}
+
+.search-input:focus,
+.type-select:focus {
+  outline: none;
+  border-color: rgba(26, 26, 26, 0.2);
+  box-shadow: 0 0 0 3px rgba(26, 26, 26, 0.04);
+  background: rgba(255, 255, 255, 0.95);
+}
+
+.type-select {
+  cursor: pointer;
+}
+
+/* ========================================
+   BOTONES - MINIMALISTAS
+   ======================================== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+  white-space: nowrap;
+  background: rgba(255, 255, 255, 0.8);
+  color: var(--text-primary);
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(26, 26, 26, 0.12);
+}
+
+.btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: var(--text-primary);
+  color: white;
+  border-color: var(--text-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: rgba(26, 26, 26, 0.9);
+  box-shadow: var(--shadow-lg);
+}
+
+.btn-secondary {
+  background: rgba(26, 26, 26, 0.04);
+  color: var(--text-primary);
+  border-color: rgba(26, 26, 26, 0.08);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: rgba(26, 26, 26, 0.08);
+}
+
+.btn-icon {
+  padding: 8px 12px;
+  background: rgba(26, 26, 26, 0.04);
+  color: var(--text-primary);
+  min-width: auto;
+  border-color: rgba(26, 26, 26, 0.08);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: rgba(26, 26, 26, 0.08);
+}
+
+.btn-sm {
+  padding: 8px 14px;
+  font-size: 0.8125rem;
+}
+
+/* ========================================
+   TABLA
+   ======================================== */
+.table-wrapper {
+  overflow-x: auto;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.token-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+}
+
+/* Header de la tabla - Minimalista */
+.token-table thead {
+  position: sticky;
+  top: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  z-index: 10;
+}
+
+.token-table th {
+  padding: 14px 16px;
+  text-align: left;
+  font-weight: 600;
+  color: var(--text-primary);
+  border-bottom: 1px solid rgba(26, 26, 26, 0.08);
+  white-space: nowrap;
+}
+
+.token-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: all var(--transition-base);
+}
+
+.token-table th.sortable:hover {
+  background: rgba(26, 26, 26, 0.04);
+}
+
+/* Columnas específicas */
+.col-index {
+  width: 60px;
+  text-align: center;
+}
+
+.col-type {
+  width: 200px;
+}
+
+.col-lexeme {
+  min-width: 150px;
+  max-width: 300px;
+}
+
+.col-line,
+.col-column,
+.col-position {
+  width: 100px;
+  text-align: center;
+}
+
+/* Filas - Minimalistas */
+.token-row {
+  transition: all var(--transition-base);
+  background: rgba(255, 255, 255, 0.5);
+}
+
+.token-row:nth-child(even) {
+  background: rgba(26, 26, 26, 0.015);
+}
+
+.token-row:hover {
+  background: rgba(26, 26, 26, 0.04);
+  transform: scale(1.002);
+}
+
+.token-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(26, 26, 26, 0.04);
+}
+
+.col-index {
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+/* Badge de tipo de token - Minimalista */
+.token-type-badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  background: rgba(26, 26, 26, 0.06);
+  border: 1px solid rgba(26, 26, 26, 0.08);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Código del lexema - Minimalista */
+.lexeme-code {
+  font-family: 'Courier New', Consolas, monospace;
+  background: rgba(26, 26, 26, 0.04);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border: 1px solid rgba(26, 26, 26, 0.06);
+  font-weight: 500;
+}
+
+/* Estado vacío - Minimalista */
+.empty-row td {
+  padding: 60px 16px;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.empty-state .icon {
+  font-size: 3rem;
+  display: block;
+  margin-bottom: 16px;
+  opacity: 0.3;
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  margin: 10px 0;
+  font-size: 1rem;
+  color: var(--text-primary);
+  font-weight: 500;
+}
+
+.empty-hint {
+  font-size: 0.875rem !important;
+  color: var(--text-secondary) !important;
+  font-weight: 400 !important;
+}
+
+/* ========================================
+   FOOTER / PAGINACIÓN - GLASSMORPHISM
+   ======================================== */
+.table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 20px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid rgba(26, 26, 26, 0.06);
+  font-size: 0.875rem;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.footer-info {
+  color: var(--text-secondary);
+  font-size: 0.9375rem;
+}
+
+.footer-info strong {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.footer-hint {
+  color: var(--text-tertiary);
+  font-size: 0.8125rem;
+  margin-left: 8px;
+}
+
+/* Selector de tamaño de página */
+.page-size-selector {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.page-size-label {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.page-size-select {
+  padding: 6px 12px;
+  border-radius: var(--border-radius-md);
+  border: 1px solid rgba(26, 26, 26, 0.1);
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.page-size-select:hover {
+  border-color: var(--color-primary);
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.page-size-select:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb), 0.1);
+}
+
+.page-info {
+  color: var(--text-primary);
+  font-weight: 500;
+  min-width: 120px;
+  text-align: center;
+}
+
+/* ========================================
+   ICONOS
+   ======================================== */
+.icon {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* ========================================
+   SCROLLBAR - MINIMALISTA
+   ======================================== */
+.table-wrapper::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background: rgba(26, 26, 26, 0.02);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(26, 26, 26, 0.1);
+  border-radius: 8px;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+}
+
+.table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(26, 26, 26, 0.15);
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .controls-row {
+    flex-direction: column;
+  }
+
+  .control-group {
+    min-width: 100%;
+  }
+
+  .control-group.action-buttons {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .token-table {
+    font-size: 0.8125rem;
+  }
+
+  .token-table th,
+  .token-table td {
+    padding: 8px 12px;
+  }
+
+  .col-type {
+    width: 150px;
+  }
+
+  .col-lexeme {
+    min-width: 120px;
+    max-width: 200px;
+  }
+}
+
+@media (max-width: 480px) {
+  .table-title {
+    font-size: 1rem;
+  }
+
+  .token-count {
+    display: block;
+    font-size: 0.75rem;
+  }
+
+  .btn-sm {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+  }
+
+  .table-wrapper {
+    max-height: 400px;
+  }
+}

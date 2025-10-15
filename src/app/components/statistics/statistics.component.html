@@ -1,0 +1,154 @@
+<!-- ========================================
+     STATISTICS COMPONENT
+     ======================================== -->
+<div class="statistics-container" [class.collapsed]="!isExpanded">
+  
+  <!-- Header -->
+  <div class="stats-header" [class.success]="isSuccessful" [class.has-errors]="!isSuccessful">
+    <div class="header-left">
+      <h3 class="stats-title">
+        Estadísticas del Análisis
+      </h3>
+    </div>
+    
+    <div class="header-right">
+      <button class="btn btn-icon" (click)="toggleExpand()" title="Expandir/Colapsar">
+        <span>{{ isExpanded ? '▼' : '▶' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Contenido -->
+  <div class="stats-content" *ngIf="isExpanded">
+    
+    <!-- Tarjetas de resumen -->
+    <div class="summary-cards">
+      <div class="stat-card tokens">
+        <div class="card-content">
+          <div class="card-label">Tokens</div>
+          <div class="card-value">{{ totalTokens }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card errors" [class.has-errors]="totalErrors > 0">
+        <div class="card-content">
+          <div class="card-label">Errores</div>
+          <div class="card-value">{{ totalErrors }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card lines">
+        <div class="card-content">
+          <div class="card-label">Líneas</div>
+          <div class="card-value">{{ totalLines }}</div>
+        </div>
+      </div>
+
+      <div class="stat-card time">
+        <div class="card-content">
+          <div class="card-label">Tiempo</div>
+          <div class="card-value">{{ analysisTime.toFixed(2) }} ms</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje sin datos -->
+    <div class="no-data" *ngIf="!analysisResult">
+      <p>No hay datos de análisis disponibles</p>
+      <p class="no-data-hint">Analiza código para ver estadísticas</p>
+    </div>
+
+    <!-- Tabs de visualización -->
+    <div class="view-tabs" *ngIf="analysisResult && totalTokens > 0">
+      <button 
+        class="tab-btn"
+        [class.active]="currentView === 'categories'"
+        (click)="changeView('categories')"
+      >
+        Categorías ({{ categoryStats.length }})
+      </button>
+      
+      <button 
+        class="tab-btn"
+        [class.active]="currentView === 'types'"
+        (click)="changeView('types')"
+      >
+        Tipos ({{ tokenTypeStats.length }})
+      </button>
+    </div>
+
+    <!-- Vista de Categorías - COMPLETA -->
+    <div class="stats-view" *ngIf="currentView === 'categories' && categoryStats.length > 0">
+      <div class="section-title">
+        <h4>Todas las Categorías</h4>
+        <span class="count-badge">{{ categoryStats.length }} categorías</span>
+      </div>
+      <div class="chart-container scrollable">
+        <div class="stat-item" *ngFor="let stat of categoryStats; let i = index">
+          <div class="stat-info">
+            <span class="item-number">{{ i + 1 }}</span>
+            <span class="stat-name">{{ stat.category }}</span>
+            <span class="stat-count">{{ stat.count }} tokens</span>
+          </div>
+          
+          <div class="stat-bar-wrapper">
+            <div 
+              class="stat-bar"
+              [style.width.%]="stat.percentage"
+              [style.background-color]="stat.color"
+            >
+              <span class="stat-percentage">{{ stat.percentage.toFixed(2) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Vista de Tipos - COMPLETA -->
+    <div class="stats-view" *ngIf="currentView === 'types' && tokenTypeStats.length > 0">
+      <div class="section-title">
+        <h4>Todos los Tipos de Tokens</h4>
+        <span class="count-badge">{{ tokenTypeStats.length }} tipos</span>
+      </div>
+      <div class="chart-container scrollable">
+        <div class="stat-item" *ngFor="let stat of tokenTypeStats; let i = index">
+          <div class="stat-info">
+            <span class="item-number">{{ i + 1 }}</span>
+            <code class="stat-name">{{ stat.type }}</code>
+            <span class="stat-count">{{ stat.count }} tokens</span>
+          </div>
+          
+          <div class="stat-bar-wrapper">
+            <div 
+              class="stat-bar"
+              [style.width.%]="stat.percentage"
+              [style.background-color]="stat.color"
+            >
+              <span class="stat-percentage">{{ stat.percentage.toFixed(2) }}%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Botones de acción -->
+    <div class="stats-actions" *ngIf="analysisResult && totalTokens > 0">
+      <button 
+        class="btn btn-secondary btn-sm"
+        (click)="copyStatistics()"
+        title="Copiar estadísticas"
+      >
+        Copiar
+      </button>
+      
+      <button 
+        class="btn btn-primary btn-sm"
+        (click)="exportStatistics()"
+        title="Exportar estadísticas"
+      >
+        Exportar
+      </button>
+    </div>
+  </div>
+</div>
+
