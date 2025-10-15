@@ -1,0 +1,197 @@
+<!-- ========================================
+     TOKEN TABLE COMPONENT
+     ======================================== -->
+<div class="token-table-container" [class.collapsed]="!isExpanded">
+  
+  <!-- Header -->
+  <div class="table-header">
+    <div class="header-left">
+      <h3 class="table-title">
+        Tabla de Tokens
+        <span class="token-count">({{ filteredTokens.length }} de {{ tokens.length }})</span>
+      </h3>
+    </div>
+    
+    <div class="header-right">
+      <button class="btn btn-icon" (click)="toggleExpand()" title="Expandir/Colapsar">
+        <span>{{ isExpanded ? '▼' : '▶' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Controles de Filtrado -->
+  <div class="table-controls" *ngIf="isExpanded">
+    <div class="controls-row">
+      <!-- Búsqueda de texto -->
+      <div class="control-group">
+        <label class="control-label">
+          Buscar:
+        </label>
+        <input 
+          type="text" 
+          class="search-input"
+          [(ngModel)]="searchText"
+          (input)="applyFilters()"
+          placeholder="Buscar por tipo o lexema..."
+        />
+      </div>
+
+      <!-- Filtro por tipo -->
+      <div class="control-group">
+        <label class="control-label">
+          Tipo:
+        </label>
+        <select 
+          class="type-select"
+          [(ngModel)]="selectedTokenType"
+          (change)="applyFilters()"
+        >
+          <option value="">Todos los tipos</option>
+          <option *ngFor="let type of tokenTypes" [value]="type">
+            {{ type }}
+          </option>
+        </select>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="control-group action-buttons">
+        <button 
+          class="btn btn-secondary btn-sm"
+          (click)="clearFilters()"
+          [disabled]="!searchText && !selectedTokenType"
+          title="Limpiar filtros"
+        >
+          Limpiar
+        </button>
+        
+        <button 
+          class="btn btn-secondary btn-sm"
+          (click)="copyToClipboard()"
+          [disabled]="filteredTokens.length === 0"
+          title="Copiar al portapapeles"
+        >
+          Copiar
+        </button>
+        
+        <button 
+          class="btn btn-primary btn-sm"
+          (click)="exportToCSV()"
+          [disabled]="filteredTokens.length === 0"
+          title="Exportar a CSV"
+        >
+          Exportar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla de Tokens -->
+  <div class="table-wrapper" *ngIf="isExpanded">
+    <table class="token-table">
+      <thead>
+        <tr>
+          <th class="col-index">#</th>
+          <th class="col-type sortable" (click)="sortBy('type')">
+            Tipo {{ getSortIcon('type') }}
+          </th>
+          <th class="col-lexeme sortable" (click)="sortBy('lexeme')">
+            Lexema {{ getSortIcon('lexeme') }}
+          </th>
+          <th class="col-line sortable" (click)="sortBy('line')">
+            Línea {{ getSortIcon('line') }}
+          </th>
+          <th class="col-column sortable" (click)="sortBy('column')">
+            Columna {{ getSortIcon('column') }}
+          </th>
+          <th class="col-position sortable" (click)="sortBy('position')">
+            Posición {{ getSortIcon('position') }}
+          </th>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <tr *ngFor="let token of pagedTokens; let i = index" class="token-row">
+          <td class="col-index">{{ +pageStart + i + 1 }}</td>
+          <td class="col-type">
+            <span class="token-type-badge" [style.background-color]="getTokenTypeColor(token.type)">
+              {{ token.type }}
+            </span>
+          </td>
+          <td class="col-lexeme">
+            <code class="lexeme-code">{{ token.lexeme }}</code>
+          </td>
+          <td class="col-line">{{ token.line }}</td>
+          <td class="col-column">{{ token.column }}</td>
+          <td class="col-position">{{ token.position }}</td>
+        </tr>
+        
+        <!-- Fila vacía -->
+        <tr *ngIf="filteredTokens.length === 0" class="empty-row">
+          <td colspan="6">
+            <div class="empty-state">
+              <p>No se encontraron tokens</p>
+              <p class="empty-hint">
+                {{ tokens.length === 0 ? 'Analiza código para ver los tokens' : 'Ajusta los filtros para ver resultados' }}
+              </p>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginación -->
+  <div class="table-footer" *ngIf="isExpanded && filteredTokens.length > 0">
+    <div class="footer-left">
+      <span class="footer-info">
+        Mostrando 
+        <strong>{{ pageStart + 1 }}</strong> - 
+        <strong>{{ Math.min(pageStart + +pageSize, filteredTokens.length) }}</strong> 
+        de <strong>{{ filteredTokens.length }}</strong> tokens
+        <span class="footer-hint" *ngIf="filteredTokens.length < tokens.length">
+          ({{ tokens.length }} totales, {{ filteredTokens.length }} filtrados)
+        </span>
+      </span>
+      
+      <div class="page-size-selector">
+        <label class="page-size-label">Por página:</label>
+        <select 
+          class="page-size-select"
+          [(ngModel)]="pageSize"
+          (change)="onPageSizeChange()"
+        >
+          <option [value]="10">10</option>
+          <option [value]="25">25</option>
+          <option [value]="50">50</option>
+          <option [value]="100">100</option>
+          <option [value]="200">200</option>
+          <option [value]="filteredTokens.length">Todos ({{ filteredTokens.length }})</option>
+        </select>
+      </div>
+    </div>
+    
+    <div class="footer-right">
+      <button 
+        class="btn btn-icon btn-sm"
+        (click)="previousPage()"
+        [disabled]="pageStart === 0"
+        title="Página anterior"
+      >
+        ◀
+      </button>
+      
+      <span class="page-info">
+        Página {{ currentPage }} de {{ totalPages }}
+      </span>
+      
+      <button 
+        class="btn btn-icon btn-sm"
+        (click)="nextPage()"
+        [disabled]="pageStart + pageSize >= filteredTokens.length"
+        title="Página siguiente"
+      >
+        ▶
+      </button>
+    </div>
+  </div>
+</div>

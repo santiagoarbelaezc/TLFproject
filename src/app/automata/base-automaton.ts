@@ -8,7 +8,6 @@ import { TokenType } from '../models/token-type.enum';
  * los autómatas del analizador léxico. Cada autómata reconoce
  * una categoría específica de tokens.
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export abstract class BaseAutomaton {

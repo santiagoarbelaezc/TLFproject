@@ -6,7 +6,6 @@ import { TokenType } from '../models/token-type.enum';
  * Esta clase gestiona todas las palabras reservadas de Kotlin
  * y proporciona métodos para su identificación.
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export class ReservedWords {

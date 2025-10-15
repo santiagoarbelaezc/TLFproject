@@ -6,7 +6,6 @@ import { TokenType } from './token-type.enum';
  * Un token es la unidad léxica básica del lenguaje, como
  * una palabra reservada, identificador, operador, etc.
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export interface Token {

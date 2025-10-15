@@ -1,7 +1,6 @@
 /**
  * Tipos de errores léxicos que puede detectar el analizador
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export enum LexicalErrorType {

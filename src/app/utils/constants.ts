@@ -1,7 +1,6 @@
 /**
  * Constantes globales del analizador léxico
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export class Constants {

@@ -4,7 +4,6 @@ import { LexicalError } from './lexical-error.model';
 /**
  * Resultado completo del análisis léxico
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export interface AnalysisResult {

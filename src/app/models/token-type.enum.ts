@@ -2,7 +2,6 @@
  * Enumeración de todos los tipos de tokens reconocidos
  * en el lenguaje Kotlin
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export enum TokenType {

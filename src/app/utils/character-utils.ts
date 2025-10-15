@@ -4,7 +4,6 @@
  * Esta clase proporciona métodos estáticos para identificar
  * diferentes tipos de caracteres durante el análisis léxico.
  * 
- * @author Juan Sebastian Noreña
  * @date 2025
  */
 export class CharacterUtils {

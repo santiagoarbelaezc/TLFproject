@@ -1,0 +1,185 @@
+<!-- ========================================
+     ERROR PANEL COMPONENT
+     ======================================== -->
+<div class="error-panel-container" [class.collapsed]="!isExpanded">
+  
+  <!-- Header -->
+  <div class="panel-header" [class.has-errors]="errors.length > 0">
+    <div class="header-left">
+      <h3 class="panel-title">
+        Errores Léxicos
+        <span class="error-count" *ngIf="errors.length > 0">
+          ({{ filteredErrors.length }} de {{ errors.length }})
+        </span>
+      </h3>
+    </div>
+    
+    <div class="header-right">
+      <!-- Resumen de severidad -->
+      <div class="severity-summary" *ngIf="errors.length > 0">
+        <span class="severity-badge critical" *ngIf="getErrorCountBySeverity('critical') > 0">
+          CRÍTICO: {{ getErrorCountBySeverity('critical') }}
+        </span>
+        <span class="severity-badge warning" *ngIf="getErrorCountBySeverity('warning') > 0">
+          ADVERTENCIA: {{ getErrorCountBySeverity('warning') }}
+        </span>
+        <span class="severity-badge info" *ngIf="getErrorCountBySeverity('info') > 0">
+          INFO: {{ getErrorCountBySeverity('info') }}
+        </span>
+      </div>
+      
+      <button class="btn btn-icon" (click)="toggleExpand()" title="Expandir/Colapsar">
+        <span>{{ isExpanded ? '▼' : '▶' }}</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Controles -->
+  <div class="panel-controls" *ngIf="isExpanded && errors.length > 0">
+    <div class="controls-row">
+      <!-- Filtro por severidad -->
+      <div class="control-group">
+        <label class="control-label">
+          Severidad:
+        </label>
+        <select 
+          class="severity-select"
+          [(ngModel)]="selectedSeverity"
+          (change)="applyFilters()"
+        >
+          <option value="">Todas</option>
+          <option value="critical">Crítico</option>
+          <option value="warning">Advertencia</option>
+          <option value="info">Información</option>
+        </select>
+      </div>
+
+      <!-- Toggle de detalles -->
+      <div class="control-group">
+        <label class="toggle-label">
+          <input 
+            type="checkbox" 
+            [(ngModel)]="showDetails"
+            class="toggle-checkbox"
+          />
+          <span>Mostrar detalles</span>
+        </label>
+      </div>
+
+      <!-- Botones de acción -->
+      <div class="control-group action-buttons">
+        <button 
+          class="btn btn-secondary btn-sm"
+          (click)="clearFilters()"
+          [disabled]="!selectedSeverity"
+          title="Limpiar filtros"
+        >
+          Limpiar
+        </button>
+        
+        <button 
+          class="btn btn-secondary btn-sm"
+          (click)="copyErrors()"
+          [disabled]="filteredErrors.length === 0"
+          title="Copiar al portapapeles"
+        >
+          Copiar
+        </button>
+        
+        <button 
+          class="btn btn-primary btn-sm"
+          (click)="exportErrors()"
+          [disabled]="filteredErrors.length === 0"
+          title="Exportar reporte"
+        >
+          Exportar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lista de errores -->
+  <div class="errors-list" *ngIf="isExpanded">
+    <!-- Sin errores -->
+    <div class="no-errors" *ngIf="errors.length === 0">
+      <p class="no-errors-title">¡Excelente! No se encontraron errores léxicos</p>
+      <p class="no-errors-subtitle">El código fuente es sintácticamente correcto a nivel léxico</p>
+    </div>
+
+    <!-- Contador de errores visibles -->
+    <div class="errors-counter" *ngIf="filteredErrors.length > 0">
+      <span class="counter-text">
+        Mostrando <strong>{{ filteredErrors.length }}</strong> 
+        {{ filteredErrors.length === 1 ? 'error' : 'errores' }}
+        <span *ngIf="filteredErrors.length < errors.length">
+          de <strong>{{ errors.length }}</strong> totales
+        </span>
+      </span>
+    </div>
+
+    <!-- Con errores - CON SCROLL -->
+    <div class="error-items scrollable" *ngIf="filteredErrors.length > 0">
+      <div 
+        class="error-item"
+        *ngFor="let error of filteredErrors; let i = index"
+        [class.critical]="error.severity === 'critical'"
+        [class.warning]="error.severity === 'warning'"
+        [class.info]="error.severity === 'info'"
+      >
+        <!-- Header del error -->
+        <div class="error-header">
+          <div class="error-header-left">
+            <span class="error-icon">{{ error.icon }}</span>
+            <span class="error-number">#{{ i + 1 }}</span>
+            <span 
+              class="severity-label"
+              [style.background-color]="getSeverityColor(error.severity)"
+            >
+              {{ getSeverityText(error.severity) }}
+            </span>
+          </div>
+          
+          <div class="error-location">
+            <span class="location-item">
+              Línea {{ error.line }}
+            </span>
+            <span class="location-item">
+              Col {{ error.column }}
+            </span>
+          </div>
+        </div>
+
+        <!-- Mensaje del error -->
+        <div class="error-message">
+          <strong>{{ error.message }}</strong>
+        </div>
+
+        <!-- Detalles adicionales -->
+        <div class="error-details" *ngIf="showDetails">
+          <div class="detail-row">
+            <span class="detail-label">Tipo:</span>
+            <code class="detail-value">{{ error.type }}</code>
+          </div>
+          
+          <div class="detail-row" *ngIf="error.lexeme">
+            <span class="detail-label">Lexema:</span>
+            <code class="detail-value error-lexeme">{{ error.lexeme }}</code>
+          </div>
+          
+          <div class="detail-row suggestion" *ngIf="error.suggestion">
+            <span class="suggestion-text">{{ error.suggestion }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sin resultados de filtro -->
+    <div class="no-results" *ngIf="errors.length > 0 && filteredErrors.length === 0">
+      <p>No se encontraron errores con los filtros aplicados</p>
+      <button class="btn btn-secondary btn-sm" (click)="clearFilters()">
+        Limpiar filtros
+      </button>
+    </div>
+  </div>
+</div>
+

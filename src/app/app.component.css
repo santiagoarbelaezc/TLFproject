@@ -1,0 +1,491 @@
+/* ========================================
+   APP COMPONENT STYLES - MINIMALISTA
+   ======================================== */
+
+/* Contenedor Principal */
+.app-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========================================
+   HEADER - LIQUID GLASS AVANZADO CON BORDES REDONDEADOS
+   ======================================== */
+.app-header {
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-lg)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-xl);
+  color: var(--text-primary);
+  padding: 40px 0;
+  box-shadow: var(--shadow-float);
+  margin: 24px;
+  margin-bottom: 32px;
+  position: sticky;
+  top: 24px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+/* Efecto de brillo superior en header */
+.app-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    transparent 100%);
+  opacity: 0.8;
+}
+
+/* Reflexión animada en header */
+.app-header::after {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -100%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, transparent 50%);
+  animation: header-shimmer 15s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes header-shimmer {
+  0%, 100% {
+    transform: translate(0, 0);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translate(20%, 20%);
+    opacity: 0.5;
+  }
+}
+
+.header-content {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.header-left {
+  flex: 1;
+}
+
+.app-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--text-primary);
+  letter-spacing: -0.03em;
+}
+
+.title-icon {
+  font-size: 2.5rem;
+}
+
+.app-subtitle {
+  font-size: 1.125rem;
+  margin: 0;
+  color: var(--text-secondary);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+.header-right {
+  display: flex;
+  gap: 12px;
+}
+
+.version-badge,
+.tech-badge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 2px 8px rgba(0, 0, 0, 0.04),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Brillo interno en badges */
+.version-badge::before,
+.tech-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.version-badge:hover,
+.tech-badge:hover {
+  background: var(--glass-bg-medium);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 
+    0 4px 12px rgba(0, 0, 0, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.version-badge:hover::before,
+.tech-badge:hover::before {
+  left: 100%;
+}
+
+/* ========================================
+   SECCIONES
+   ======================================== */
+.editor-section,
+.results-section {
+  max-width: 1536px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0 24px;
+}
+
+.results-section {
+  margin-top: 32px;
+  animation: fadeInUp 0.5s ease;
+}
+
+/* ========================================
+   MENSAJE DE ESTADO - LIQUID GLASS SIN EMOJI
+   ======================================== */
+.status-message {
+  display: flex;
+  align-items: center;
+  padding: 32px 40px;
+  border-radius: var(--border-radius-lg);
+  margin-bottom: 28px;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-md)) saturate(150%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-md)) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  animation: slideInLeft 0.4s ease;
+  box-shadow: var(--shadow-float);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Gradiente de fondo verde para éxito */
+.status-message.success::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top left, rgba(34, 197, 94, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Gradiente de fondo rojo para error */
+.status-message.error::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: radial-gradient(circle at top left, rgba(239, 68, 68, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+/* Borde de acento lateral con efecto líquido */
+.status-message::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 5px;
+  border-radius: var(--border-radius-lg) 0 0 var(--border-radius-lg);
+}
+
+.status-message.success::after {
+  background: linear-gradient(180deg, 
+    rgba(46, 204, 113, 0.3), 
+    var(--color-success), 
+    rgba(46, 204, 113, 0.3));
+  box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
+}
+
+.status-message.error::after {
+  background: linear-gradient(180deg, 
+    rgba(231, 76, 60, 0.3), 
+    var(--color-error), 
+    rgba(231, 76, 60, 0.3));
+  box-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+}
+
+.status-message:hover {
+  box-shadow: var(--shadow-float-hover);
+  transform: translateY(-3px) scale(1.005);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.status-content {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.status-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+}
+
+.status-description {
+  font-size: 1.125rem;
+  margin: 0;
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+/* ========================================
+   FOOTER - LIQUID GLASS
+   ======================================== */
+.app-footer {
+  margin-top: auto;
+  padding: 32px 0;
+  background: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur-lg)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--glass-blur-lg)) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius-xl);
+  margin: 60px 24px 24px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Línea de brillo superior en footer */
+.app-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 255, 255, 0.6) 50%, 
+    transparent 100%);
+}
+
+.footer-content {
+  max-width: 1536px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-left {
+  flex: 1;
+}
+
+.footer-text {
+  margin: 0 0 4px 0;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.footer-subtext {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}
+
+.footer-right {
+  display: flex;
+  align-items: center;
+}
+
+.footer-links {
+  display: flex;
+  gap: 24px;
+}
+
+.footer-link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 8px 14px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0);
+  backdrop-filter: blur(0px);
+  -webkit-backdrop-filter: blur(0px);
+  border: 1px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto de vidrio al hover en links */
+.footer-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--glass-bg-light);
+  backdrop-filter: blur(var(--glass-blur-sm));
+  -webkit-backdrop-filter: blur(var(--glass-blur-sm));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.footer-link:hover {
+  color: var(--text-primary);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.footer-link:hover::before {
+  opacity: 1;
+}
+
+/* ========================================
+   ICONOS
+   ======================================== */
+.icon {
+  font-size: 1.1em;
+  line-height: 1;
+}
+
+/* ========================================
+   ANIMACIONES
+   ======================================== */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+@media (max-width: 768px) {
+  .app-header {
+    padding: 24px 0;
+  }
+
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .app-title {
+    font-size: 2rem;
+  }
+
+  .title-icon {
+    font-size: 2rem;
+  }
+
+  .app-subtitle {
+    font-size: 1rem;
+  }
+
+  .header-right {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .status-message {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .status-icon {
+    font-size: 3rem;
+  }
+
+  .status-title {
+    font-size: 1.5rem;
+  }
+
+  .status-description {
+    font-size: 1rem;
+  }
+
+  .footer-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .footer-links {
+    flex-direction: column;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .app-title {
+    font-size: 1.75rem;
+  }
+
+  .version-badge,
+  .tech-badge {
+    padding: 6px 12px;
+    font-size: 0.8125rem;
+  }
+}
