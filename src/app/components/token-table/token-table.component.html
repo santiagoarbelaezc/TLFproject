@@ -75,11 +75,20 @@
         
         <button 
           class="btn btn-primary btn-sm"
+          (click)="exportToExcel()"
+          [disabled]="filteredTokens.length === 0"
+          title="Exportar a Excel con estilos"
+        >
+          Exportar Excel
+        </button>
+        
+        <button 
+          class="btn btn-secondary btn-sm"
           (click)="exportToCSV()"
           [disabled]="filteredTokens.length === 0"
-          title="Exportar a CSV"
+          title="Exportar a CSV simple"
         >
-          Exportar
+          Exportar CSV
         </button>
       </div>
     </div>
