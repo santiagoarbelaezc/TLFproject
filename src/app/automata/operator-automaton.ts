@@ -2,12 +2,13 @@
  * @file operator-automaton.ts
  * @description Autómata Finito Determinista (AFD) para el reconocimiento de operadores
  * en el lenguaje Kotlin, incluyendo operadores aritméticos, lógicos, de comparación,
- * asignación y operadores especiales de Kotlin.
+ * asignación, bitwise y operadores especiales de Kotlin.
  * 
  * Operadores soportados:
  * - Aritméticos: + - * / %
  * - Comparación: == != < > <= >= === !==
  * - Lógicos: && || !
+ * - Bitwise: & | ^
  * - Asignación: = += -= *= /= %=
  * - Incremento/Decremento: ++ --
  * - Especiales Kotlin: ?. !! ?: :: .. -> => in !in is !is as as?
@@ -64,6 +65,11 @@ export class OperatorAutomaton extends BaseAutomaton {
     ['&&', TokenType.AND],
     ['||', TokenType.OR],
     ['!', TokenType.NOT],
+    
+    // Bitwise (verificar && y || primero)
+    ['&', TokenType.BITWISE_AND],
+    ['|', TokenType.BITWISE_OR],
+    ['^', TokenType.BITWISE_XOR],
     
     // Asignación
     ['=', TokenType.ASSIGN],
@@ -168,7 +174,7 @@ export class OperatorAutomaton extends BaseAutomaton {
    * @returns true si puede iniciar un operador
    */
   public static isOperatorStart(char: string): boolean {
-    const operatorStarts = ['+', '-', '*', '/', '%', '=', '!', '<', '>', '&', '|', '?', ':', '.', 'a', 'i'];
+    const operatorStarts = ['+', '-', '*', '/', '%', '=', '!', '<', '>', '&', '|', '^', '?', ':', '.', 'a', 'i'];
     return operatorStarts.includes(char);
   }
 }

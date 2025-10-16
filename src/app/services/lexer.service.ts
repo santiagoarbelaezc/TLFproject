@@ -23,6 +23,15 @@ import { OperatorAutomaton } from '../automata/operator-automaton';
 import { DelimiterAutomaton } from '../automata/delimiter-automaton';
 
 /**
+ * Resultado del reconocimiento de un token
+ */
+interface RecognitionResult {
+  token?: Token;
+  error?: LexicalError;
+  skipLength?: number;
+}
+
+/**
  * Servicio principal del analizador léxico
  * 
  * Este servicio coordina todos los autómatas finitos deterministas
@@ -94,14 +103,25 @@ export class LexerService {
       }
 
       // Intentar reconocer un token
-      const token = this.recognizeToken(input, position, line, column);
+      const result = this.recognizeToken(input, position, line, column);
 
-      if (token) {
+      if (result && result.token) {
         // Token reconocido exitosamente
-        tokens.push(token);
-        const tokenLength = token.length;
+        tokens.push(result.token);
+        const tokenLength = result.token.length;
         position += tokenLength;
         column += tokenLength;
+      } else if (result && result.error) {
+        // Error específico detectado por un autómata
+        errors.push(result.error);
+        // Avanzar según el contexto del error
+        if (result.skipLength && result.skipLength > 0) {
+          position += result.skipLength;
+          column += result.skipLength;
+        } else {
+          position++;
+          column++;
+        }
       } else {
         // Error: carácter no reconocido
         errors.push({
@@ -148,39 +168,94 @@ export class LexerService {
    * @param position Posición actual
    * @param line Línea actual
    * @param column Columna actual
-   * @returns Token reconocido o null si no se pudo reconocer
+   * @returns Resultado del reconocimiento (token exitoso o error específico)
    */
   private recognizeToken(
     input: string,
     position: number,
     line: number,
     column: number
-  ): Token | null {
+  ): RecognitionResult | null {
+    const currentChar = input[position];
+    
     // Intentar con cada autómata en orden de prioridad
     
     // 1. Comentarios (deben ir antes de operadores para evitar confusión con /)
-    let token = this.commentAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    if (currentChar === '/') {
+      const token = this.commentAutomaton.recognize(input, position, line, column);
+      if (token) {
+        return { token };
+      }
+      
+      // Si empieza con / y el segundo carácter es *, pero no es un comentario válido
+      if (position + 1 < input.length && input[position + 1] === '*') {
+        // Verificar si el comentario está sin cerrar
+        const restOfInput = input.substring(position);
+        if (!restOfInput.includes('*/')) {
+          return {
+            error: {
+              type: LexicalErrorType.UNCLOSED_BLOCK_COMMENT,
+              message: 'Comentario de bloque sin cerrar (falta */)',
+              line,
+              column,
+              lexeme: input.substring(position, Math.min(position + 50, input.length))
+            },
+            skipLength: input.length - position // Saltar hasta el final
+          };
+        }
+      }
+    }
 
-    // 2. Números
-    token = this.numberAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    // 2. Strings, chars, templates (ANTES de números para detectar errores)
+    if (currentChar === '"' || currentChar === "'") {
+      const token = this.stringAutomaton.recognize(input, position, line, column);
+      if (token) {
+        return { token };
+      }
+      
+      // Si no se reconoció, es un string/char sin cerrar
+      const quoteType = currentChar === '"' ? 'cadena' : 'carácter';
+      const closingQuote = currentChar;
+      
+      // Buscar hasta el final de línea o fin de archivo
+      let endPos = position + 1;
+      let lexeme = currentChar;
+      while (endPos < input.length) {
+        const char = input[endPos];
+        if (char === '\n' || char === '\r') {
+          break;
+        }
+        lexeme += char;
+        endPos++;
+      }
+      
+      return {
+        error: {
+          type: LexicalErrorType.UNCLOSED_STRING,
+          message: `${quoteType.charAt(0).toUpperCase() + quoteType.slice(1)} sin cerrar (falta ${closingQuote})`,
+          line,
+          column,
+          lexeme
+        },
+        skipLength: lexeme.length
+      };
+    }
 
-    // 3. Strings, chars, templates
-    token = this.stringAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    // 3. Números
+    let token = this.numberAutomaton.recognize(input, position, line, column);
+    if (token) return { token };
 
     // 4. Operadores (antes de delimitadores para reconocer operadores compuestos)
     token = this.operatorAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    if (token) return { token };
 
     // 5. Identificadores y palabras reservadas
     token = this.identifierAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    if (token) return { token };
 
     // 6. Delimitadores
     token = this.delimiterAutomaton.recognize(input, position, line, column);
-    if (token) return token;
+    if (token) return { token };
 
     // No se pudo reconocer el token
     return null;

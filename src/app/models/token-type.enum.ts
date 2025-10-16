@@ -87,6 +87,16 @@ export enum TokenType {
   
   /** NOT lógico: ! */
   NOT = 'NOT',
+  
+  // ==================== OPERADORES BITWISE ====================
+  /** Bitwise AND: & */
+  BITWISE_AND = 'BITWISE_AND',
+  
+  /** Bitwise OR: | */
+  BITWISE_OR = 'BITWISE_OR',
+  
+  /** Bitwise XOR: ^ */
+  BITWISE_XOR = 'BITWISE_XOR',
 
   // ==================== OPERADORES DE ASIGNACIÓN ====================
   /** Asignación: = */
@@ -182,6 +192,18 @@ export enum TokenType {
   
   /** Dos puntos: : */
   COLON = 'COLON',
+  
+  /** Arroba (anotaciones): @ */
+  AT = 'AT',
+  
+  /** Numeral: # */
+  HASH = 'HASH',
+  
+  /** Tilde: ~ */
+  TILDE = 'TILDE',
+  
+  /** Acento grave (backtick): ` */
+  BACKTICK = 'BACKTICK',
 
   // ==================== COMENTARIOS ====================
   /** Comentario de línea: // */

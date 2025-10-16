@@ -11,6 +11,10 @@
  * - Coma: ,
  * - Punto: .
  * - Dos puntos: :
+ * - Arroba: @ (anotaciones)
+ * - Numeral: # (contextos especiales)
+ * - Tilde: ~ (bitwise NOT)
+ * - Backtick: ` (identificadores escapados)
  * 
  * Estados del AFD:
  * - START: Estado inicial
@@ -53,7 +57,13 @@ export class DelimiterAutomaton extends BaseAutomaton {
     [';', TokenType.SEMICOLON],
     [',', TokenType.COMMA],
     ['.', TokenType.DOT],
-    [':', TokenType.COLON]
+    [':', TokenType.COLON],
+    
+    // Símbolos especiales
+    ['@', TokenType.AT],      // Anotaciones: @Override, @Deprecated
+    ['#', TokenType.HASH],    // Usado en algunos contextos especiales
+    ['~', TokenType.TILDE],   // Bitwise NOT (aunque raro en Kotlin)
+    ['`', TokenType.BACKTICK] // Identificadores escapados: `class`, `fun`
   ]);
 
   /**

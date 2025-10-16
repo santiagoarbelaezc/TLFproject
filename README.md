@@ -501,9 +501,9 @@ ERROR: String template mal formado en línea 1, columna 25
 
 | Nombre | Rol | GitHub | Contribución |
 |--------|-----|--------|--------------|
-| Santiago Arbeláez | Desarrollador | [@santiagoarbelaezc](https://github.com/santiagoarbelaezc) | - |
-| Juan Sebastian Noreña | Desarrollador | [@JuanNorena](https://github.com/JuanNorena) | - |
-| [Por definir] | Desarrollador | [@usuario](https://github.com/usuario) | Testing e integración |
+| Santiago Arbeláez | Desarrollador | [@santiagoarbelaezc](https://github.com/santiagoarbelaezc) | Nada |
+| Juan Sebastian Noreña | Desarrollador | [@JuanNorena](https://github.com/JuanNorena) | Desarrollador principal |
+| Santiago Ovalle Cortez | Desarrollador | [@SantOvalle08](https://github.com/SantOvalle08) | Nada |
 
 ### Roles y Responsabilidades
 - **Desarrollador Principal**: Diseño de arquitectura, implementación de AFDs, coordinación del proyecto
@@ -543,7 +543,7 @@ Este proyecto es desarrollado con fines académicos para el curso de **Teoría d
 **Facultad**: Ingeniería de Sistemas  
 **Curso**: Teoría de Lenguajes Formales  
 **Semestre**: Octavo Semestre - 2025  
-**Profesor**: [Nombre del Profesor]  
+**Profesor**: Carlos Andres Florez 
 **Tipo**: Proyecto Final de Curso  
 
 ### Objetivos de Aprendizaje
