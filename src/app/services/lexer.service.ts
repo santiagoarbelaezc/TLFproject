@@ -213,35 +213,77 @@ export class LexerService {
         return { token };
       }
       
-      // Si no se reconoció, es un string/char sin cerrar
+      // Si no se reconoció, puede ser por varias razones
       const quoteType = currentChar === '"' ? 'cadena' : 'carácter';
       const closingQuote = currentChar;
       
-      // Buscar hasta el final de línea o fin de archivo
+      // Buscar hasta el final de línea o comilla de cierre
       let endPos = position + 1;
       let lexeme = currentChar;
+      let foundInvalidChar = false;
+      let invalidChar = '';
+      let invalidCharPos = -1;
+      let foundClosingQuote = false;
+      
       while (endPos < input.length) {
         const char = input[endPos];
+        
+        // Detectar carácter Unicode inválido (pero continuar capturando)
+        if (!foundInvalidChar && !CharacterUtils.isValidUnicodeChar(char)) {
+          foundInvalidChar = true;
+          invalidChar = char;
+          invalidCharPos = endPos - position;
+        }
+        
+        // Salto de línea termina el string
         if (char === '\n' || char === '\r') {
           break;
         }
+        
+        // Comilla de cierre termina el string
+        if (char === closingQuote) {
+          lexeme += char;
+          endPos++;
+          foundClosingQuote = true;
+          break;
+        }
+        
         lexeme += char;
         endPos++;
       }
       
-      return {
-        error: {
-          type: LexicalErrorType.UNCLOSED_STRING,
-          message: `${quoteType.charAt(0).toUpperCase() + quoteType.slice(1)} sin cerrar (falta ${closingQuote})`,
-          line,
-          column,
-          lexeme
-        },
-        skipLength: lexeme.length
-      };
-    }
-
-    // 3. Números
+      // Si encontramos un carácter inválido, reportarlo específicamente
+      if (foundInvalidChar) {
+        return {
+          error: {
+            type: LexicalErrorType.INVALID_UNICODE_CHAR,
+            message: `Carácter Unicode inválido en ${quoteType}: '${invalidChar}' (U+${invalidChar.charCodeAt(0).toString(16).toUpperCase().padStart(4, '0')})`,
+            line,
+            column: column + invalidCharPos,
+            lexeme
+          },
+          skipLength: lexeme.length
+        };
+      }
+      
+      // String/char sin cerrar (solo si no encontró la comilla de cierre)
+      if (!foundClosingQuote) {
+        return {
+          error: {
+            type: LexicalErrorType.UNCLOSED_STRING,
+            message: `${quoteType.charAt(0).toUpperCase() + quoteType.slice(1)} sin cerrar (falta ${closingQuote})`,
+            line,
+            column,
+            lexeme
+          },
+          skipLength: lexeme.length
+        };
+      }
+      
+      // Si llegamos aquí, el string estaba cerrado pero tenía algún error
+      // que el autómata detectó. No deberíamos llegar aquí normalmente.
+      return null;
+    }    // 3. Números
     let token = this.numberAutomaton.recognize(input, position, line, column);
     if (token) return { token };
 

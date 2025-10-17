@@ -158,4 +158,53 @@ export class CharacterUtils {
   static isEOF(char: string): boolean {
     return char === '\0' || char === undefined || char === null;
   }
+
+  /**
+   * Verifica si un carácter es un carácter Unicode válido
+   * Detecta caracteres inválidos como � (U+FFFD - REPLACEMENT CHARACTER)
+   * y otros caracteres de control no imprimibles
+   * @param char Carácter a verificar
+   * @returns true si es un carácter válido
+   */
+  static isValidUnicodeChar(char: string): boolean {
+    if (!char || char.length === 0) return false;
+    
+    const code = char.charCodeAt(0);
+    
+    // Carácter de reemplazo Unicode (indica codificación inválida)
+    if (code === 0xFFFD) return false;
+    
+    // Caracteres de control no imprimibles (excepto los permitidos)
+    // Permitir: tab (0x09), newline (0x0A), carriage return (0x0D)
+    if (code < 0x20 && code !== 0x09 && code !== 0x0A && code !== 0x0D) {
+      return false;
+    }
+    
+    // Rango de surrogates no emparejados (solo válidos en pares UTF-16)
+    if (code >= 0xD800 && code <= 0xDFFF) {
+      return false;
+    }
+    
+    // Caracteres non-characters del plano básico multilingüe
+    if (code >= 0xFDD0 && code <= 0xFDEF) {
+      return false;
+    }
+    
+    return true;
+  }
+
+  /**
+   * Verifica si un carácter es válido dentro de un string literal
+   * @param char Carácter a verificar
+   * @returns true si es válido para strings
+   */
+  static isValidStringChar(char: string): boolean {
+    if (!char || char.length === 0) return false;
+    
+    // No permitir saltos de línea sin escape (strings normales)
+    if (char === '\n' || char === '\r') return false;
+    
+    // Validar que sea un carácter Unicode válido
+    return this.isValidUnicodeChar(char);
+  }
 }

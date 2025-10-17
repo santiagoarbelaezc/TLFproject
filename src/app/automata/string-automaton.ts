@@ -131,6 +131,13 @@ export class StringAutomaton extends BaseAutomaton {
         this.state = StringState.REJECT;
         return null;
       } else {
+        // Validar que sea un carácter Unicode válido
+        if (!CharacterUtils.isValidUnicodeChar(char)) {
+          // Carácter inválido detectado (como �)
+          this.state = StringState.REJECT;
+          return null;
+        }
+        
         // Carácter normal
         charContent += char;
         this.consume(input, pos);
@@ -204,6 +211,13 @@ export class StringAutomaton extends BaseAutomaton {
         this.state = StringState.REJECT;
         return null;
       } else {
+        // Validar que sea un carácter Unicode válido
+        if (!CharacterUtils.isValidUnicodeChar(char)) {
+          // Carácter inválido detectado (como �)
+          this.state = StringState.REJECT;
+          return null;
+        }
+        
         // Carácter normal
         stringContent += char;
         this.consume(input, pos);

@@ -23,7 +23,10 @@ export enum LexicalErrorType {
   INVALID_CHAR = 'INVALID_CHAR',
   
   /** Raw string sin cerrar: """texto */
-  UNCLOSED_RAW_STRING = 'UNCLOSED_RAW_STRING'
+  UNCLOSED_RAW_STRING = 'UNCLOSED_RAW_STRING',
+  
+  /** Carácter Unicode inválido o mal codificado: � */
+  INVALID_UNICODE_CHAR = 'INVALID_UNICODE_CHAR'
 }
 
 /**
