@@ -212,6 +212,111 @@ val logico = a && b
 val elvis = nombre ?: "Desconocido"
 val safeCall = persona?.nombre`;
         break;
+
+      case 'escape-valid':
+        this.sourceCode = `// EJEMPLO CORRECTO - Caracteres especiales válidos
+// Solo estos escapes son válidos en Kotlin:
+// \\n \\t \\r \\b \\\\ \\" \\' \\$ \\uXXXX
+
+fun main() {
+    // Salto de línea (\\n)
+    val mensaje1 = "Primera línea\\nSegunda línea"
+    
+    // Tabulación (\\t)
+    val columnas = "Nombre\\tEdad\\tCiudad"
+    
+    // Retorno de carro (\\r)
+    val retorno = "Texto\\rInicio"
+    
+    // Backspace (\\b)
+    val borrar = "ABC\\bD"
+    
+    // Barra invertida (\\\\)
+    val ruta = "C:\\\\Users\\\\Documents"
+    
+    // Comilla doble (\\")
+    val cita = "Él dijo: \\"Hola\\""
+    
+    // Comilla simple (\\')
+    val char1 = '\\''
+    
+    // Signo de dólar (\\$)
+    val precio = "Costo: \\$100"
+    
+    // Combinados
+    val complejo = "Línea 1\\n\\tNombre: Juan\\n\\tEdad: 25"
+    
+    println("Todos los escapes son válidos")
+}`;
+        break;
+
+      case 'escape-error1':
+        this.sourceCode = `// ERROR 1: Secuencia de escape \\f (form feed) - NO VÁLIDA
+// Solo se permiten: \\n \\t \\r \\b \\\\ \\" \\' \\$ \\uXXXX
+
+fun main() {
+    val texto = "Hola\\fMundo"
+    
+    // ERROR: \\f no es un escape válido en Kotlin
+    // El analizador debe reportar:
+    // "Secuencia de escape inválida: \\f"
+    
+    println(texto)
+}`;
+        break;
+
+      case 'escape-error2':
+        this.sourceCode = `// ERROR 2: Secuencia de escape \\v (vertical tab) - NO VÁLIDA
+// Solo se permiten: \\n \\t \\r \\b \\\\ \\" \\' \\$ \\uXXXX
+
+fun main() {
+    val texto = "Columna1\\vColumna2"
+    
+    // ERROR: \\v no es un escape válido en Kotlin
+    // El analizador debe reportar:
+    // "Secuencia de escape inválida: \\v"
+    
+    println(texto)
+}`;
+        break;
+
+      case 'escape-error3':
+        this.sourceCode = `// ERROR 3: Secuencia de escape \\x (hex) - NO VÁLIDA
+// Solo se permiten: \\n \\t \\r \\b \\\\ \\" \\' \\$ \\uXXXX
+// Nota: \\xHH NO es válido, debe usar \\uXXXX (4 dígitos)
+
+fun main() {
+    val texto = "Carácter: \\xFF"
+    
+    // ERROR: \\x no es un escape válido en Kotlin
+    // El analizador debe reportar:
+    // "Secuencia de escape inválida: \\x"
+    
+    println(texto)
+}`;
+        break;
+
+      case 'escape-error4':
+        this.sourceCode = `// ERROR 4: Múltiples secuencias de escape inválidas
+// Solo se permiten: \\n \\t \\r \\b \\\\ \\" \\' \\$ \\uXXXX
+
+fun main() {
+    val error1 = "Texto\\aConAlarma"     // \\a = alarma (NO VÁLIDO)
+    val error2 = "Texto\\0ConNull"       // \\0 = null (NO VÁLIDO)
+    val error3 = "Texto\\eConEscape"     // \\e = escape (NO VÁLIDO)
+    
+    // ERRORES: \\a, \\0, \\e no son escapes válidos
+    // El analizador debe reportar cada uno:
+    // - "Secuencia de escape inválida: \\a"
+    // - "Secuencia de escape inválida: \\0"
+    // - "Secuencia de escape inválida: \\e"
+         �
+    
+    println(error1)
+    println(error2)
+    println(error3)
+}`;
+        break;
     }
     
     // Resetear el selector a la opción por defecto

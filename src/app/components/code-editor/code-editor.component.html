@@ -58,11 +58,22 @@
         (ngModelChange)="insertExample($event)"
         [disabled]="isAnalyzing">
         <option value="">Seleccionar ejemplo...</option>
-        <option value="variables">Variables</option>
-        <option value="functions">Funciones</option>
-        <option value="classes">Clases</option>
-        <option value="control">Estructuras de Control</option>
-        <option value="operators">Operadores</option>
+        <optgroup label="Ejemplos Básicos">
+          <option value="variables">Variables</option>
+          <option value="functions">Funciones</option>
+          <option value="classes">Clases</option>
+          <option value="control">Estructuras de Control</option>
+          <option value="operators">Operadores</option>
+        </optgroup>
+        <optgroup label="Caracteres Especiales Válidos">
+          <option value="escape-valid">Ejemplo Correcto (\n \t \r \b \\ \" \' \$)</option>
+        </optgroup>
+        <optgroup label="Errores Léxicos - Escapes Inválidos">
+          <option value="escape-error1">Error: Escape \f (form feed)</option>
+          <option value="escape-error2">Error: Escape \v (vertical tab)</option>
+          <option value="escape-error3">Error: Escape \x (hex)</option>
+          <option value="escape-error4">Error: Múltiples escapes inválidos</option>
+        </optgroup>
       </select>
     </div>
   </div>
