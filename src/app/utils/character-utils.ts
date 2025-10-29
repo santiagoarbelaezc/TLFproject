@@ -120,23 +120,40 @@ export class CharacterUtils {
 
   /**
    * Convierte un carácter de escape a su valor real
+   * Solo acepta escapes válidos de Kotlin: \n, \t, \r, \b, \\, \", \', \$
    * @param char Carácter después de la barra invertida
-   * @returns Valor real del carácter de escape
+   * @returns Valor real del carácter de escape, o null si el escape es inválido
    */
-  static escapeCharToValue(char: string): string {
+  static escapeCharToValue(char: string): string | null {
+    // Mapa de escapes válidos en Kotlin (excluyendo \uXXXX que se maneja aparte)
     const escapeMap: { [key: string]: string } = {
-      'n': '\n',
-      't': '\t',
-      'r': '\r',
-      'b': '\b',
-      'f': '\f',
-      '\\': '\\',
-      '"': '"',
-      "'": "'",
-      '$': '$',
-      '0': '\0'
+      'n': '\n',    // Newline
+      't': '\t',    // Tab
+      'r': '\r',    // Carriage return
+      'b': '\b',    // Backspace
+      '\\': '\\',   // Backslash
+      '"': '"',     // Comilla doble
+      "'": "'",     // Comilla simple
+      '$': '$'      // Signo de dólar (para templates)
     };
-    return escapeMap[char] || char;
+    
+    // Si el escape está en el mapa, retornar su valor
+    if (escapeMap.hasOwnProperty(char)) {
+      return escapeMap[char];
+    }
+    
+    // Escape no válido
+    return null;
+  }
+
+  /**
+   * Verifica si un carácter es un escape válido en Kotlin
+   * @param char Carácter después de la barra invertida
+   * @returns true si es un escape válido
+   */
+  static isValidEscapeChar(char: string): boolean {
+    const validEscapes = ['n', 't', 'r', 'b', '\\', '"', "'", '$', 'u'];
+    return validEscapes.includes(char);
   }
 
   /**

@@ -105,7 +105,15 @@ export class StringAutomaton extends BaseAutomaton {
 
       if (escaped) {
         // Procesar carácter escapado
-        charContent += CharacterUtils.escapeCharToValue(char);
+        const escapedValue = CharacterUtils.escapeCharToValue(char);
+        
+        if (escapedValue === null) {
+          // Escape inválido - rechazar
+          this.state = StringState.REJECT;
+          return null;
+        }
+        
+        charContent += escapedValue;
         this.consume(input, pos);
         escaped = false;
       } else if (char === '\\') {
@@ -171,7 +179,15 @@ export class StringAutomaton extends BaseAutomaton {
 
       if (escaped) {
         // Procesar carácter escapado
-        stringContent += CharacterUtils.escapeCharToValue(char);
+        const escapedValue = CharacterUtils.escapeCharToValue(char);
+        
+        if (escapedValue === null) {
+          // Escape inválido - rechazar
+          this.state = StringState.REJECT;
+          return null;
+        }
+        
+        stringContent += escapedValue;
         this.consume(input, pos);
         escaped = false;
       } else if (char === '\\') {

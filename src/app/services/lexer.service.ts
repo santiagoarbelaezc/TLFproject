@@ -224,9 +224,25 @@ export class LexerService {
       let invalidChar = '';
       let invalidCharPos = -1;
       let foundClosingQuote = false;
+      let foundInvalidEscape = false;
+      let invalidEscapeChar = '';
+      let invalidEscapePos = -1;
+      let inEscape = false;
       
       while (endPos < input.length) {
         const char = input[endPos];
+        
+        // Detectar escape inválido
+        if (inEscape) {
+          if (!foundInvalidEscape && !CharacterUtils.isValidEscapeChar(char)) {
+            foundInvalidEscape = true;
+            invalidEscapeChar = char;
+            invalidEscapePos = endPos - position;
+          }
+          inEscape = false;
+        } else if (char === '\\') {
+          inEscape = true;
+        }
         
         // Detectar carácter Unicode inválido (pero continuar capturando)
         if (!foundInvalidChar && !CharacterUtils.isValidUnicodeChar(char)) {
@@ -241,7 +257,7 @@ export class LexerService {
         }
         
         // Comilla de cierre termina el string
-        if (char === closingQuote) {
+        if (char === closingQuote && !inEscape) {
           lexeme += char;
           endPos++;
           foundClosingQuote = true;
@@ -252,7 +268,23 @@ export class LexerService {
         endPos++;
       }
       
-      // Si encontramos un carácter inválido, reportarlo específicamente
+      // PRIORIDAD 1: Reportar escape inválido (más específico)
+      if (foundInvalidEscape && foundClosingQuote) {
+        const validEscapes = '\\n, \\t, \\r, \\b, \\\\, \\", \\\', \\$, \\uXXXX';
+        return {
+          error: {
+            type: LexicalErrorType.INVALID_ESCAPE_SEQUENCE,
+            message: `Secuencia de escape inválida: \\${invalidEscapeChar}. Solo se permiten: ${validEscapes}`,
+            line,
+            column: column + invalidEscapePos - 1,
+            lexeme,
+            suggestion: `Verifica la secuencia de escape. ¿Quisiste usar \\\\${invalidEscapeChar}?`
+          },
+          skipLength: lexeme.length
+        };
+      }
+      
+      // PRIORIDAD 2: Si encontramos un carácter inválido
       if (foundInvalidChar) {
         return {
           error: {
@@ -266,7 +298,7 @@ export class LexerService {
         };
       }
       
-      // String/char sin cerrar (solo si no encontró la comilla de cierre)
+      // PRIORIDAD 3: String/char sin cerrar
       if (!foundClosingQuote) {
         return {
           error: {
