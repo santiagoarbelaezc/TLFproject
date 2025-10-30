@@ -29,7 +29,19 @@ export enum LexicalErrorType {
   INVALID_UNICODE_CHAR = 'INVALID_UNICODE_CHAR',
   
   /** Secuencia de escape inválida: \f, \x, etc. */
-  INVALID_ESCAPE_SEQUENCE = 'INVALID_ESCAPE_SEQUENCE'
+  INVALID_ESCAPE_SEQUENCE = 'INVALID_ESCAPE_SEQUENCE',
+  
+  /** Paréntesis sin cerrar: ( sin ) */
+  UNMATCHED_PAREN = 'UNMATCHED_PAREN',
+  
+  /** Llave sin cerrar: { sin } */
+  UNMATCHED_BRACE = 'UNMATCHED_BRACE',
+  
+  /** Corchete sin cerrar: [ sin ] */
+  UNMATCHED_BRACKET = 'UNMATCHED_BRACKET',
+  
+  /** Delimitador de cierre sin apertura: ), }, ] */
+  UNEXPECTED_CLOSING_DELIMITER = 'UNEXPECTED_CLOSING_DELIMITER'
 }
 
 /**

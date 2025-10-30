@@ -317,6 +317,115 @@ fun main() {
     println(error3)
 }`;
         break;
+
+      case 'delimiter-valid':
+        this.sourceCode = `// EJEMPLO CORRECTO - Delimitadores balanceados
+// Todos los paréntesis, llaves y corchetes están correctamente balanceados
+
+fun calcular(a: Int, b: Int): Int {
+    val resultado = (a + b) * 2
+    val lista = listOf(1, 2, 3)
+    val array = arrayOf(1, 2, 3)
+    
+    if (a > 0) {
+        println("Positivo")
+    } else {
+        println("Negativo o cero")
+    }
+    
+    val map = mapOf("uno" to 1, "dos" to 2)
+    
+    return resultado
+}
+
+class Ejemplo {
+    fun metodo() {
+        val x = (1 + 2) * (3 + 4)
+        val y = listOf(arrayOf(1, 2), arrayOf(3, 4))
+    }
+}`;
+        break;
+
+      case 'delimiter-error1':
+        this.sourceCode = `// ERROR 1: Paréntesis sin cerrar
+// Falta cerrar un paréntesis
+
+fun main() {
+    val resultado = (10 + 20
+    
+    // ERROR: Paréntesis '(' en línea 4 sin cerrar
+    // El analizador debe reportar:
+    // "Paréntesis sin cerrar (falta ')')"
+    
+    println(resultado)
+}`;
+        break;
+
+      case 'delimiter-error2':
+        this.sourceCode = `// ERROR 2: Llave sin cerrar
+// Falta cerrar una llave
+
+fun main() {
+    if (true) {
+        println("Hola")
+    
+    // ERROR: Llave '{' en línea 5 sin cerrar
+    // El analizador debe reportar:
+    // "Llave sin cerrar (falta '}')"
+    
+    println("Mundo")
+}`;
+        break;
+
+      case 'delimiter-error3':
+        this.sourceCode = `// ERROR 3: Corchete sin cerrar
+// Falta cerrar un corchete
+
+fun main() {
+    val lista = listOf(1, 2, 3)
+    val elemento = lista[0
+    
+    // ERROR: Corchete '[' en línea 5 sin cerrar
+    // El analizador debe reportar:
+    // "Corchete sin cerrar (falta ']')"
+    
+    println(elemento)
+}`;
+        break;
+
+      case 'delimiter-error4':
+        this.sourceCode = `// ERROR 4: Delimitador de cierre sin apertura
+// Hay un paréntesis de cierre sin su correspondiente apertura
+
+fun main() {
+    val x = 10 + 20)
+    
+    // ERROR: Paréntesis ')' en línea 4 sin apertura
+    // El analizador debe reportar:
+    // "Delimitador de cierre ')' sin apertura correspondiente"
+    
+    println(x)
+}`;
+        break;
+
+      case 'delimiter-error5':
+        this.sourceCode = `// ERROR 5: Delimitadores desbalanceados (mixtos)
+// Se abre con un tipo y se cierra con otro
+
+fun main() {
+    val resultado = (10 + 20]
+    
+    // ERROR: Se esperaba ')' pero se encontró ']'
+    // El analizador debe reportar:
+    // "Se esperaba ')' pero se encontró ']'"
+    
+    val lista = [1, 2, 3)
+    
+    // ERROR: Se esperaba ']' pero se encontró ')'
+    
+    println(resultado)
+}`;
+        break;
     }
     
     // Resetear el selector a la opción por defecto

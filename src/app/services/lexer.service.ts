@@ -69,6 +69,9 @@ export class LexerService {
     const tokens: Token[] = [];
     const errors: LexicalError[] = [];
     
+    // Pila para validar balanceo de delimitadores
+    const delimiterStack: Array<{token: Token, type: string}> = [];
+    
     let position = 0;
     let line = 1;
     let column = 1;
@@ -108,6 +111,10 @@ export class LexerService {
       if (result && result.token) {
         // Token reconocido exitosamente
         tokens.push(result.token);
+        
+        // Validar balanceo de delimitadores
+        this.checkDelimiterBalance(result.token, delimiterStack, errors);
+        
         const tokenLength = result.token.length;
         position += tokenLength;
         column += tokenLength;
@@ -135,6 +142,9 @@ export class LexerService {
         column++;
       }
     }
+    
+    // Verificar delimitadores sin cerrar al final del archivo
+    this.checkUnclosedDelimiters(delimiterStack, errors);
 
     // Agregar token EOF (End Of File)
     tokens.push({
@@ -423,6 +433,170 @@ export class LexerService {
       TokenType.LBRACKET, TokenType.RBRACKET, TokenType.SEMICOLON, TokenType.COMMA,
       TokenType.DOT, TokenType.COLON
     ].includes(type);
+  }
+
+  /**
+   * Verifica el balanceo de delimitadores (paréntesis, llaves, corchetes)
+   * Agrega el delimitador de apertura a la pila o valida el de cierre
+   * @param token Token a verificar
+   * @param stack Pila de delimitadores abiertos
+   * @param errors Array de errores donde agregar errores de balanceo
+   */
+  private checkDelimiterBalance(
+    token: Token,
+    stack: Array<{token: Token, type: string}>,
+    errors: LexicalError[]
+  ): void {
+    // Solo procesar delimitadores de apertura y cierre
+    const openDelimiters = [TokenType.LPAREN, TokenType.LBRACE, TokenType.LBRACKET];
+    const closeDelimiters = [TokenType.RPAREN, TokenType.RBRACE, TokenType.RBRACKET];
+    
+    if (openDelimiters.includes(token.type)) {
+      // Delimitador de apertura: agregar a la pila
+      const delimiterType = this.getDelimiterType(token.type);
+      stack.push({ token, type: delimiterType });
+    } else if (closeDelimiters.includes(token.type)) {
+      // Delimitador de cierre: verificar que coincida con el último abierto
+      const delimiterType = this.getDelimiterType(token.type);
+      
+      if (stack.length === 0) {
+        // Error: delimitador de cierre sin apertura
+        errors.push({
+          type: LexicalErrorType.UNEXPECTED_CLOSING_DELIMITER,
+          message: `Delimitador de cierre '${token.lexeme}' sin apertura correspondiente`,
+          line: token.line,
+          column: token.column,
+          lexeme: token.lexeme,
+          suggestion: `Verifica que exista un '${this.getOpeningDelimiter(token.lexeme)}' antes de este cierre`
+        });
+      } else {
+        const lastOpen = stack[stack.length - 1];
+        
+        if (lastOpen.type === delimiterType) {
+          // Correcto: coincide con el último abierto
+          stack.pop();
+        } else {
+          // Error: el cierre no coincide con el último abierto
+          errors.push({
+            type: LexicalErrorType.UNEXPECTED_CLOSING_DELIMITER,
+            message: `Se esperaba '${this.getClosingDelimiter(lastOpen.type)}' pero se encontró '${token.lexeme}'`,
+            line: token.line,
+            column: token.column,
+            lexeme: token.lexeme,
+            suggestion: `El '${lastOpen.token.lexeme}' en línea ${lastOpen.token.line}:${lastOpen.token.column} debe cerrarse con '${this.getClosingDelimiter(lastOpen.type)}'`
+          });
+        }
+      }
+    }
+  }
+
+  /**
+   * Verifica si quedan delimitadores sin cerrar al final del archivo
+   * @param stack Pila de delimitadores abiertos
+   * @param errors Array de errores donde agregar errores de delimitadores sin cerrar
+   */
+  private checkUnclosedDelimiters(
+    stack: Array<{token: Token, type: string}>,
+    errors: LexicalError[]
+  ): void {
+    // Reportar todos los delimitadores que quedaron sin cerrar
+    while (stack.length > 0) {
+      const unclosed = stack.pop()!;
+      const errorType = this.getUnclosedErrorType(unclosed.type);
+      const closingDelimiter = this.getClosingDelimiter(unclosed.type);
+      
+      errors.push({
+        type: errorType,
+        message: `${this.getDelimiterName(unclosed.type)} sin cerrar (falta '${closingDelimiter}')`,
+        line: unclosed.token.line,
+        column: unclosed.token.column,
+        lexeme: unclosed.token.lexeme,
+        suggestion: `Agrega '${closingDelimiter}' para cerrar el '${unclosed.token.lexeme}' de la línea ${unclosed.token.line}`
+      });
+    }
+  }
+
+  /**
+   * Obtiene el tipo de delimitador (paren, brace, bracket)
+   */
+  private getDelimiterType(tokenType: TokenType): string {
+    switch (tokenType) {
+      case TokenType.LPAREN:
+      case TokenType.RPAREN:
+        return 'paren';
+      case TokenType.LBRACE:
+      case TokenType.RBRACE:
+        return 'brace';
+      case TokenType.LBRACKET:
+      case TokenType.RBRACKET:
+        return 'bracket';
+      default:
+        return 'unknown';
+    }
+  }
+
+  /**
+   * Obtiene el tipo de error para un delimitador sin cerrar
+   */
+  private getUnclosedErrorType(delimiterType: string): LexicalErrorType {
+    switch (delimiterType) {
+      case 'paren':
+        return LexicalErrorType.UNMATCHED_PAREN;
+      case 'brace':
+        return LexicalErrorType.UNMATCHED_BRACE;
+      case 'bracket':
+        return LexicalErrorType.UNMATCHED_BRACKET;
+      default:
+        return LexicalErrorType.UNRECOGNIZED_TOKEN;
+    }
+  }
+
+  /**
+   * Obtiene el delimitador de cierre correspondiente
+   */
+  private getClosingDelimiter(delimiterType: string): string {
+    switch (delimiterType) {
+      case 'paren':
+        return ')';
+      case 'brace':
+        return '}';
+      case 'bracket':
+        return ']';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Obtiene el delimitador de apertura correspondiente
+   */
+  private getOpeningDelimiter(closingDelimiter: string): string {
+    switch (closingDelimiter) {
+      case ')':
+        return '(';
+      case '}':
+        return '{';
+      case ']':
+        return '[';
+      default:
+        return '';
+    }
+  }
+
+  /**
+   * Obtiene el nombre descriptivo del delimitador
+   */
+  private getDelimiterName(delimiterType: string): string {
+    switch (delimiterType) {
+      case 'paren':
+        return 'Paréntesis';
+      case 'brace':
+        return 'Llave';
+      case 'bracket':
+        return 'Corchete';
+      default:
+        return 'Delimitador';
+    }
   }
 
   /**
