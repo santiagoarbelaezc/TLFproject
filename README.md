@@ -4,7 +4,7 @@
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.5.2-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-**Proyecto Final - Universidad de Antioquia**  
+**Proyecto Final - Universidad del Quindio**  
 *Implementación de un Analizador Léxico para Kotlin con Autómatas Finitos Deterministas (AFD)*
 
 ---
